@@ -31,15 +31,12 @@ class Lite {
     exec($command);
   }
 
-
   //截取视频前n秒
   public function get_video_part($input, $output, $begin_second = '00:00:01', $end_second = '00:00:05')
   {
     $command = $this->config['ffmpeg_path']." -ss ".$begin_second." -i ".$input." -t ".$end_second." ".$output;
     exec($command);
   }
-
-
 
   //获取视频的时长
   public function get_video_timeline($input)
@@ -75,9 +72,9 @@ class Lite {
   }
 
   //将ts切片，并生成m3u8文件
-  public function video_to_m3u8_and_ts($input, $outputM3u8, $outputTs)
+  public function video_to_m3u8_and_ts($input, $outputM3u8, $outputTs, $segmentTime = 10)
   {
-    $command = $this->config['ffmpeg_path']." -i ".$input." -c copy -map 0 -f segment -segment_list ".$outputM3u8." -segment_time 10 " .$outputTs;
+    $command = $this->config['ffmpeg_path']." -i ".$input." -c copy -map 0 -f segment -segment_list ".$outputM3u8." -segment_time ".$segmentTime." " .$outputTs;
     exec($command);
   }
 }
