@@ -9,8 +9,8 @@ class Lite {
 * @param string $config['qt_faststart_path']
 * @param string $config['ffprobe_path']
 * @param string $config['keep_original_video']  
-* @param string $config['gif']  
-* @param string $config['jpg']  
+* @param array $config['gif']  
+* @param array $config['jpg']  
 */
   public function __construct($config = NULL) {
     $this->config = $config;
@@ -23,30 +23,21 @@ class Lite {
   public function get_video_image($input, $output, $fromdurasec = '00:00:01')
   {
     $command = $this->config['ffmpeg_path']." -i ".$input." -an -ss ".$fromdurasec." -r 1 -vframes 1 -f mjpeg -y ".$output;
-    if(exec($command)){
-      return true;
-    };
-    return false;
+    exec($command);
   }
 
   //视频缩略图
   public function get_video_image_gif($input, $output, $fromdurasec = '00:00:01', $second = 5)
   {
     $command = $this->config['ffmpeg_path']." -i ".$input." -an -ss ".$fromdurasec." -r 1 -vframes ".$second." -y ".$output;
-    if(exec($command)){
-      return true;
-    };
-    return false;
+    exec($command);
   }
 
   //截取视频前n秒
   public function get_video_part($input, $output, $begin_second = '00:00:01', $end_second = '00:00:05')
   {
     $command = $this->config['ffmpeg_path']." -ss ".$begin_second." -i ".$input." -t ".$end_second." ".$output;
-    if(exec($command)){
-      return true;
-    };
-    return false;
+    exec($command);
   }
 
   //获取视频的时长

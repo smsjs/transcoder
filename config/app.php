@@ -1,16 +1,16 @@
 <?php
 return array(
   'transcoder' => array(
-    'ffmpeg_path' => '', //ffmpeg路径
-    'qt_faststart_path' => '', //qt_faststart路径
-    'ffprobe_path' => '', //ffprobe路径
+    'ffmpeg_path' => API_ROOT.'/vendor/lbao/src/bin/ffmpeg', //ffmpeg路径
+    'ffprobe_path' => API_ROOT.'/vendor/lbao/src/bin/ffprobe', //ffprobe路径
+    'ffserver_path' => API_ROOT.'/vendor/lbao/src/bin/ffserver', //ffserver路径
+    'qt_faststart_path' => API_ROOT.'/vendor/lbao/src/bin/qt-faststart', //qt_faststart路径
     'keep_original_video' => true, //是否保持原始视频
-
     //gif配置
     'gif' => array(
       'create' => true, //是否生成gif
       'size' => '320x240', //尺寸
-      'second' => '5', //取N秒
+      'second' => '5', //取n秒
       //批量生成gif图
       'config' => array(
         array(
@@ -29,7 +29,7 @@ return array(
     'jpg' => array(
       'create' => true, //是否生成jpg
       'size' => '320x240', //尺寸
-      'count' => 5 //平均截取N张图片
+      'count' => 5 //平均截取n张图片
     )
   ),
 );
