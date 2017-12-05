@@ -2,28 +2,22 @@
 namespace PhalApi\Transcoder;
 
 class Lite {
-    protected $config;
-    protected $client;
+  protected $config;
 
-     /**
-     * @param string $config['accessKey']  统一的key
-     * @param string $config['secretKey']
-     * @param string $config['space_bucket']  自定义配置的空间
-     * @param string $config['space_host']  
-     */
-    public function __construct($config = NULL) {
-        $this->config = $config;
-        if ($this->config === NULL) {
-            $this->config = \PhalApi\DI()->config->get('app.Qiniu');
-        }
-        $this->client = \Qiniu\Qiniu::create(array(
-            'access_key' => $this->config['access_key'],
-            'secret_key' => $this->config['secret_key'],
-            'bucket'     => $this->config['space_bucket'],
-        ));
+  /**
+* @param string $config['ffmpeg_path']
+* @param string $config['qt_faststart_path']
+* @param string $config['ffprobe_path']
+* @param string $config['keep_original_video']  
+* @param string $config['gif']  
+* @param string $config['jpg']  
+*/
+  public function __construct($config = NULL) {
+    $this->config = $config;
+    if ($this->config === NULL) {
+      $this->config = \PhalApi\DI()->config->get('app.transcoder');
     }
-
-
+  }
 
   //视频缩略图
   public function get_video_image($ffmpegPath, $input, $output, $fromdurasec = '01')
@@ -80,7 +74,7 @@ class Lite {
     $command = $ffmpegPath.' -y -i '.$input.' -vcodec -threads 2 libx264 -metadata:s:v:0 rotate=0 '.$output;
     exec($command);
   }
-  
+
   //将mp4转为完整的ts
   public function video_to_ts($ffmpegpath, $input, $output)
   {
