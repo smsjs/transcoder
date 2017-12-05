@@ -20,16 +20,17 @@ class Lite {
   //视频缩略图
   public function get_video_image($input, $output, $fromdurasec = '00:00:01')
   {
-    $command = $this->config['ffmpeg_path']." -ss ".$fromdurasec." -i ".$input." -r 1 -vframes 1 -an -f mjpeg -y ".$output;
+    $command = $this->config['ffmpeg_path']." -ss ".$fromdurasec." -i ".$input." -q:v 2 -r 1 -vframes 1 -an -f mjpeg -y ".$output;
     exec($command);
   }
 
   //视频git
   public function get_video_image_gif($input, $output, $fromdurasec = '00:00:01', $second = 5)
   {
-    $command = $this->config['ffmpeg_path']." -an -ss ".$fromdurasec." -i ".$input." -r 1 -vframes ".$second." -y ".$output;
+    $command = $this->config['ffmpeg_path']." -an -ss ".$fromdurasec." -i ".$input." -pix_fmt rgb24 -r 1 -vframes ".$second." -y ".$output;
     exec($command);
   }
+
 
   //截取视频前n秒
   public function get_video_part($input, $output, $begin_second = '00:00:01', $end_second = '00:00:05')
@@ -37,6 +38,8 @@ class Lite {
     $command = $this->config['ffmpeg_path']." -ss ".$begin_second." -i ".$input." -t ".$end_second." ".$output;
     exec($command);
   }
+
+
 
   //获取视频的时长
   public function get_video_timeline($input)
