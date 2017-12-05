@@ -12,7 +12,7 @@ class Lite {
    * @param string $config['keep_original_video']  
    * @param array $config['gif']  
    * @param array $config['jpg']  
-   */
+  */
   public function __construct($config = NULL) {
     $this->config = $config;
   }
@@ -20,14 +20,14 @@ class Lite {
   //视频缩略图
   public function get_video_image($input, $output, $fromdurasec = '00:00:01')
   {
-    $command = $this->config['ffmpeg_path']." -i ".$input." -an -ss ".$fromdurasec." -r 1 -vframes 1 -f mjpeg -y ".$output;
+    $command = $this->config['ffmpeg_path']." -ss ".$fromdurasec." -i ".$input." -r 1 -vframes 1 -an -f mjpeg -y ".$output;
     exec($command);
   }
 
-  //视频缩略图
+  //视频git
   public function get_video_image_gif($input, $output, $fromdurasec = '00:00:01', $second = 5)
   {
-    $command = $this->config['ffmpeg_path']." -i ".$input." -an -ss ".$fromdurasec." -r 1 -vframes ".$second." -y ".$output;
+    $command = $this->config['ffmpeg_path']." -an -ss ".$fromdurasec." -i ".$input." -r 1 -vframes ".$second." -y ".$output;
     exec($command);
   }
 
