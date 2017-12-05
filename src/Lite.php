@@ -1,172 +1,97 @@
 <?php
-/**
- * upload.php
- *
- * Copyright 2013, Moxiecode Systems AB
- * Released under GPL License.
- *
- * License: http://www.plupload.com/license
- * Contributing: http://www.plupload.com/contributing
- */
+namespace PhalApi\Transcoder;
 
-#!! IMPORTANT:
-#!! this file is just an example, it doesn't incorporate any security checks and
-#!! is not recommended to be used in production environment as it is. Be sure to
-#!! revise it and customize to your needs.
+class Lite {
+    protected $config;
+    protected $client;
 
-
-// Make sure file is not cached (as it happens for example on iOS devices)
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
-// header("HTTP/1.0 500 Internal Server Error");
-
-// echo mymd5('upload/C程序设计语言.pdf'); die;
-// Support CORS
-// header("Access-Control-Allow-Origin: *");
-// other CORS headers if any...
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit; // finish preflight CORS requests here
-}
-
-
-if ( !empty($_REQUEST[ 'debug' ]) ) {
-    $random = rand(0, intval($_REQUEST[ 'debug' ]) );
-    if ( $random === 0 ) {
-        header("HTTP/1.0 500 Internal Server Error");
-        exit;
-    }
-}
-
-
-// 5 minutes execution time
-@set_time_limit(5 * 60);
-
-// Uncomment this one to fake upload time
-// usleep(5000);
-
-// Settings
-// $targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
-$targetDir = 'upload_tmp';
-$uploadDir = 'upload';
-
-$cleanupTargetDir = true; // Remove old files
-$maxFileAge = 5 * 3600; // Temp file age in seconds
-
-
-// Create target dir
-if (!file_exists($targetDir)) {
-    @mkdir($targetDir);
-}
-
-// Create target dir
-if (!file_exists($uploadDir)) {
-    @mkdir($uploadDir);
-}
-
-// Get a file name
-if (isset($_REQUEST["name"])) {
-    $fileName = $_REQUEST["name"];
-} elseif (!empty($_FILES)) {
-    $fileName = $_FILES["file"]["name"];
-} else {
-    $fileName = uniqid("file_");
-}
-
-$md5File = @file('md5list2.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-$md5File = $md5File ? $md5File : array();
-
-if (isset($_REQUEST["md5"]) && array_search($_REQUEST["md5"], $md5File ) !== FALSE ) {
-    die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "exist": 1}');
-}
-
-$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
-$uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
-
-// Chunking might be enabled
-$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
-$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
-
-
-// Remove old temp files
-if ($cleanupTargetDir) {
-    if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
-        die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
-    }
-
-    while (($file = readdir($dir)) !== false) {
-        $tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
-
-        // If temp file is current file proceed to the next
-        if ($tmpfilePath == "{$filePath}.part") {
-            continue;
+     /**
+     * @param string $config['accessKey']  统一的key
+     * @param string $config['secretKey']
+     * @param string $config['space_bucket']  自定义配置的空间
+     * @param string $config['space_host']  
+     */
+    public function __construct($config = NULL) {
+        $this->config = $config;
+        if ($this->config === NULL) {
+            $this->config = \PhalApi\DI()->config->get('app.Qiniu');
         }
-
-        // Remove temp file if it is older than the max age and is not the current file
-        if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge)) {
-            @unlink($tmpfilePath);
-        }
-    }
-    closedir($dir);
-}
-
-
-// Open temp file
-if (!$out = @fopen("{$filePath}.part", $chunks ? "ab" : "wb")) {
-    die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-}
-
-if (!empty($_FILES)) {
-    if ($_FILES["file"]["error"] || !is_uploaded_file($_FILES["file"]["tmp_name"])) {
-        die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+        $this->client = \Qiniu\Qiniu::create(array(
+            'access_key' => $this->config['access_key'],
+            'secret_key' => $this->config['secret_key'],
+            'bucket'     => $this->config['space_bucket'],
+        ));
     }
 
-    // Read binary input stream and append it to temp file
-    if (!$in = @fopen($_FILES["file"]["tmp_name"], "rb")) {
-        die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-    }
-} else {
-    if (!$in = @fopen("php://input", "rb")) {
-        die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-    }
+
+
+  //视频缩略图
+  public function get_video_image($ffmpegPath, $input, $output, $fromdurasec = '01')
+  {
+    $command = "$ffmpegPath -i $input -an -ss 00:00:$fromdurasec -r 1 -vframes 1 -f mjpeg -y $output";
+    if(exec($command)){
+      return true;
+    };
+    return false;
+  }
+
+  //视频缩略图
+  public function get_video_image_gif($ffmpegPath, $input, $output, $fromdurasec = '01')
+  {
+    $command = "$ffmpegPath -i $input -an -ss 00:00:$fromdurasec -r 1 -vframes 5 -y $output";
+    if(exec($command)){
+      return true;
+    };
+    return false;
+  }
+
+  //截取视频前5秒
+  public function get_video_part($ffmpegPath, $input, $output, $begin_second = '01', $end_second = '05')
+  {
+    $command = "$ffmpegPath -ss 00:00:$begin_second -i $input -t 00:00:$end_second $output";
+    if(exec($command)){
+      return true;
+    };
+    return false;
+  }
+
+  //获取视频的时长
+  public function get_video_timeline($ffmpegpath, $input)
+  {
+    $command = "$ffmpegpath -i ".$input." 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//";
+    $timeline = exec($command);
+    $time_arr = explode(':', $timeline);
+    $timeline = $time_arr[0] * 3600 + $time_arr[1] * 60 + intval($time_arr[2]);
+    return $timeline;
+  }
+
+  //获取视频的详细信息
+  public function get_video_info($ffmpegpath, $input)
+  {
+    $command = $ffmpegpath. " -v quiet -print_format json -show_format -show_streams " .$input;
+    exec($command,$out,$status);
+    $new = implode('',$out);
+    return json_decode($new, true);
+  }
+
+  //处理视频格式--转为h264格式
+  public function mobile_video_codec($ffmpegPath, $input, $output)
+  {
+    $command = $ffmpegPath.' -y -i '.$input.' -vcodec -threads 2 libx264 -metadata:s:v:0 rotate=0 '.$output;
+    exec($command);
+  }
+  
+  //将mp4转为完整的ts
+  public function video_to_ts($ffmpegpath, $input, $output)
+  {
+    $command = $ffmpegpath. " -i ".$input." -c copy -bsf h264_mp4toannexb " .$input;
+    exec($command);
+  }
+
+  //将ts切片，并生成m3u8文件
+  public function video_to_m3u8_and_ts($ffmpegpath, $input, $outputM3u8, $outputTs)
+  {
+    $command = $ffmpegpath. " -i ".$input." -c copy -map 0 -f segment -segment_list ".$outputM3u8." -segment_time 10 " .$outputTs;
+    exec($command);
+  }
 }
-
-while ($buff = fread($in, 4096)) {
-    fwrite($out, $buff);
-}
-
-@fclose($out);
-@fclose($in);
-
-// Check if file has been uploaded
-if (!$chunks || $chunk == $chunks - 1) {
-    // Strip the temp .part suffix off
-    rename("{$filePath}.part", $filePath);
-
-    rename($filePath, $uploadPath);
-    array_push($md5File, mymd5($uploadPath));
-    $md5File = array_unique($md5File);
-    file_put_contents('md5list2.txt', join($md5File, "\n"));
-}
-
-function mymd5( $file ) {
-    $fragment = 65536;
-
-    $rh = fopen($file, 'rb');
-    $size = filesize($file);
-
-    $part1 = fread( $rh, $fragment );
-    fseek($rh, $size-$fragment);
-    $part2 = fread( $rh, $fragment);
-    fclose($rh);
-
-    return md5( $part1.$part2 );
-}
-
-
-
-// Return Success JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
