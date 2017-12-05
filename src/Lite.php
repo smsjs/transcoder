@@ -15,9 +15,6 @@ class Lite {
    */
   public function __construct($config = NULL) {
     $this->config = $config;
-    if ($this->config === NULL) {
-      $this->config = \PhalApi\DI()->config->get('app.transcoder');
-    }
   }
 
   //视频缩略图
