@@ -1,5 +1,5 @@
 <?php
-namespace PhalApi\Transcoder;
+namespace Lbao\Transcoder;
 
 class Lite {
   protected $config;
