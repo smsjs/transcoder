@@ -1,10 +1,10 @@
 <?php
 return array(
   'transcoder' => array(
-    'ffmpeg_path' => API_ROOT.'/vendor/lbao/src/bin/ffmpeg', //ffmpeg路径
-    'ffprobe_path' => API_ROOT.'/vendor/lbao/src/bin/ffprobe', //ffprobe路径
-    'ffserver_path' => API_ROOT.'/vendor/lbao/src/bin/ffserver', //ffserver路径
-    'qt_faststart_path' => API_ROOT.'/vendor/lbao/src/bin/qt-faststart', //qt_faststart路径
+    'ffmpeg_path' => API_ROOT.'/vendor/lbao/transcoder/src/bin/ffmpeg', //ffmpeg路径
+    'ffprobe_path' => API_ROOT.'/vendor/lbao/transcoder/src/bin/ffprobe', //ffprobe路径
+    'ffserver_path' => API_ROOT.'/vendor/lbao/transcoder/src/bin/ffserver', //ffserver路径
+    'qt_faststart_path' => API_ROOT.'/vendor/lbao/transcoder/src/bin/qt-faststart', //qt_faststart路径
     'keep_original_video' => true, //是否保持原始视频
     //gif配置
     'gif' => array(
