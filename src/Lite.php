@@ -25,9 +25,23 @@ class Lite {
   }
 
   //视频git
-  public function get_video_image_gif($input, $output, $fromdurasec = '00:00:01', $second = 5)
+  public function get_video_image_gif($input, $output, $palette, $start_time = '00:00:01', $duration = 35, $filters = "trim=start_frame=12:end_frame=431,fps=15,scale=320:-1:flags=lanczos")
   {
-    $command = $this->config['ffmpeg_path']." -an -ss ".$fromdurasec." -i ".$input." -pix_fmt rgb24 -r 1 -vframes ".$second." -y ".$output;
+
+
+
+    $command = "ffmpeg -v warning -ss ".$start_time." -t ".$duration." -i ".$input." -vf ".$filters.",palettegen -y ".$palette;
+    exec($command);
+    $command = "ffmpeg -v warning -ss ".$start_time." -t ".$duration." -i ".$input." -i ".$palette." -lavfi ".$filters." [x]; [x][1:v] paletteuse -y ".$output;
+
+
+
+
+    //$command = "ffmpeg -ss ".$fromdurasec." -t ".$duration." -i ".$input." -b 568k -r 20 -vf fps=20,scale=320:-1:flags=lanczos,palettegen -y ".$output;
+    //$command = "ffmpeg -v warning -ss " + startTime + " -t " + duration + " -i " + videoPath + " -i " + globalPalettePicPath + " -r 15 -lavfi fps=15,scale=270:-1:flags=lanczos[x];[x][1:v]paletteuse -y " + outFilePath;
+
+
+    //$command = $this->config['ffmpeg_path']." -an -ss ".$fromdurasec." -i ".$input." -pix_fmt rgb24 -r 1 -vframes ".$second." -y ".$output;
     exec($command);
   }
 
