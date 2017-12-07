@@ -31,7 +31,7 @@ class Lite {
     exec($this->config['ffmpeg_path']." -v warning -ss ".$start_time." -t ".$duration." -i ".$input." -i ".$palette." -lavfi '".$filters."[x];[x][1:v]paletteuse' -y ".$output);
     @unlink($palette); 
   }
-
+  
   //截取视频前n秒
   public function get_video_part($input, $output, $begin_second = '00:00:01', $end_second = '00:00:05')
   {
