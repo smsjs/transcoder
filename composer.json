@@ -1,12 +1,12 @@
 {
 
-	"name": "lbao/transcoder",
+	"name": "laibao/transcoder",
 	"description": "赖宝专用，不要盗用",
 	"license": "MIT",
-	"keywords": ["lbao"],
+	"keywords": ["laibao"],
 	"version": "1.0.0",
 	"authors": [{
-		"name": "lbao",
+		"name": "laibao",
 		"email": "375428363@qq.com"
 	}],
 	"require": {
@@ -15,7 +15,7 @@
 
 	"autoload": {
 		"psr-4": {
-			"Lbao\\Transcoder\\": "src"
+			"laibao\\transcoder\\": "src"
 		}
 	}
 }
