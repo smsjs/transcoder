@@ -1,5 +1,5 @@
 <?php
-namespace Laibao\Transcoder;
+namespace LaiBao\Transcoder;
 
 class Lite {
   protected $config;
