@@ -68,7 +68,7 @@ class Lite {
   //将mp4转为完整的ts
   public function video_to_ts($input, $output)
   {
-    $command = $this->config['ffmpeg_path']." -i ".$input." -c copy -bsf h264_mp4toannexb " .$input;
+    $command = $this->config['ffmpeg_path']." -i ".$input." -c copy -bsf h264_mp4toannexb " .$output;
     exec($command);
   }
 
