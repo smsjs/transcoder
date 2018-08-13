@@ -15,7 +15,7 @@
 
 	"autoload": {
 		"psr-4": {
-			"laibao\\transcoder\\": "src"
+			"LaiBao\\Transcoder\\": "src"
 		}
 	}
 }
