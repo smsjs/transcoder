@@ -9,9 +9,9 @@ class Lite {
    * @param string $config['ffprobe_path']
    * @param string $config['ffprobe_path']
    * @param string $config['qt_faststart_path']
-   * @param string $config['keep_original_video']  
-   * @param array $config['gif']  
-   * @param array $config['jpg']  
+   * @param string $config['keep_original_video']
+   * @param array $config['gif']
+   * @param array $config['jpg']
   */
   public function __construct($config = NULL) {
     $this->config = $config;
